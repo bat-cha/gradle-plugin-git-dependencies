@@ -1,0 +1,17 @@
+# gradle
+.gradle/**/*
+
+# build dir
+build
+bin
+
+# eclipse
+.project
+.classpath
+.settings
+
+# log
+*.log*
+
+# DB
+DRDB

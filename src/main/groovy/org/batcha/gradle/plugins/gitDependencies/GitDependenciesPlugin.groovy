@@ -4,9 +4,11 @@ import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.artifacts.ExternalModuleDependency;
 import org.gradle.api.internal.file.DefaultSourceDirectorySet
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.GradleException
+
 
 import org.ajoberstar.gradle.git.tasks.*
 
@@ -18,24 +20,15 @@ class GitDependenciesPlugin implements Plugin<Project> {
 		project.sourceSets.all { SourceSet sourceSet ->
 			def cloneDependencyTaskName = sourceSet.getTaskName('clone', 'dependency')
 			GitClone cloneDependencyTask = project.tasks.add(cloneDependencyTaskName, GitClone)
-			
-			def gitDependenciesConfigName = (sourceSet.getName().equals(SourceSet.MAIN_SOURCE_SET_NAME) ? "git" : sourceSet.getName() + "Git")
-			project.configurations.add(gitDependenciesConfigName) {
-				visible = false
-				transitive = false
-				extendsFrom = []
-			}
-			
-			def gitRepositoriesConfigName = (sourceSet.getName().equals(SourceSet.MAIN_SOURCE_SET_NAME) ? "gitRepositories" : sourceSet.getName() + "GitRepositories")
+
 			
 			def installDependencyTaskName = sourceSet.getTaskName('install', 'dependency')
 			def installDependencyTask = project.tasks.add(installDependencyTaskName) {
 				description = "Install dependencies specified by 'git' configuration"
 				actions = [
-				{
-					project.configurations[gitDependenciesConfigName].each { file ->
-						println file
-						/*
+          
+          /*
+						
 						def destination = file(project.gitDependenciesDir + File.separator + file)
 						cloneDependencyTask.destinationDir = destination
 						cloneDependencyTask.uri = "git://github.com/bat-cha/dummy-java-project-a.git"
@@ -65,9 +58,12 @@ class GitDependenciesPlugin implements Plugin<Project> {
 								dest: project.extractedProtosDir + "/" + sourceSet.getName(),
 								compression: compression)
 						}
-						*/
-					}
-					
+					*/	
+					{
+          project.configurations.compile.allDependencies.withType(ExternalModuleDependency).each { d ->
+            println d.CLASSIFIER
+            println "group: ${d.group}, name: ${d.name}, version: ${d.version}"
+          }
 				} as Action
 				]
 			}

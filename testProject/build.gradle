@@ -2,28 +2,29 @@ group = 'org.batcha.gradle.plugins'
 version = '1.0'
 
 buildscript {
-	repositories {
-		mavenCentral()
-	}	
-    dependencies {
-        classpath files("../build/libs/gradle-plugin-git-dependencies-0.1.jar")
-		classpath 'org.ajoberstar:gradle-git:0.2.3'
-    }
+  repositories { mavenCentral() }
+  dependencies {
+    classpath files("../build/libs/gradle-plugin-git-dependencies-0.1.jar")
+    classpath 'org.ajoberstar:gradle-git:0.2.3'
+  }
 }
-apply plugin: 'java'
-apply plugin: 'git-dependencies'
 
 
 repositories {
-    mavenCentral()
+  mavenCentral()
 }
 
+apply plugin: 'java'
+apply plugin: 'git-dependencies'
+
 dependencies {
-    compile 'commons-logging:commons-logging:1.1.1'
-    
-	  compile('org.batcha:dummy-project-a:4.2') {
-      classifier = 'git://github.com/bat-cha/dummy-java-project-a.git'
-    }
-    
-    testCompile 'junit:junit:4.11'
+  
+  compile (    
+    ['commons-logging:commons-logging:1.1.+'],
+    ['log4j:log4j:1.2.+']
+  )
+  
+  compile('org.batcha:dummy-project-a:4.2').ext.git = 'git://github.com/bat-cha/dummy-java-project-a.git'
+
+  testCompile 'junit:junit:4.+'
 }

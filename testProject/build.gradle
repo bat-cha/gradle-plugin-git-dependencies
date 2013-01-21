@@ -24,7 +24,9 @@ dependencies {
     ['log4j:log4j:1.2.+']
   )
   
-  compile('org.batcha:dummy-project-a:4.2').ext.git = 'git://github.com/bat-cha/dummy-java-project-a.git'
+  compile('org.batcha:dummy-project-a:4.2').ext.git = 'https://github.com/bat-cha/dummy-java-project-a.git'
 
   testCompile 'junit:junit:4.+'
+  
+  
 }

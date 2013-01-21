@@ -1,7 +1,12 @@
 package org.batcha.gradle.plugins.gitDependencies
 
+import org.eclipse.jgit.api.CheckoutCommand;
 import org.eclipse.jgit.api.CloneCommand
+import org.eclipse.jgit.api.FetchCommand;
 import org.eclipse.jgit.api.Git
+import org.eclipse.jgit.api.ListBranchCommand;
+import org.eclipse.jgit.api.ListBranchCommand.ListMode;
+import org.eclipse.jgit.api.ListTagCommand;
 import org.eclipse.jgit.api.PullCommand
 import org.eclipse.jgit.api.errors.GitAPIException
 import org.eclipse.jgit.api.errors.TransportException
@@ -15,42 +20,30 @@ import org.gradle.api.tasks.testing.TestOutputEvent.Destination;
 class ResolveGitDependenciesTask extends DefaultTask {
   
   def String getDescription() {
+    
     return "Resolves dependencies specified using 'git' extra property in dependencies' configurations"
+    
   }
-  
-  
-  //@OutputDirectories
-  Iterable<File> outputs = new ArrayList<File>()
-  
 
   @TaskAction
   def installDependencies() {
 
-    project.sourceSets.all { SourceSet sourceSet ->
+    project.configurations.testCompile.allDependencies.withType(ExternalModuleDependency).each { d ->
 
-      project.configurations[sourceSet.compileConfigurationName].allDependencies.withType(ExternalModuleDependency).each { d ->
+      if (d.hasProperty("git")) {
 
-        if (d.hasProperty("git")) {
+        def destination = new File(project.gitDependenciesDir + File.separator + d.name)
 
-          def destination = new File(project.gitDependenciesDir + File.separator + d.name)
-          
-          outputs.add(destination)
-
-          refreshGitRepository(d.git, d.version, destination)
-          
-        }
-        
+        refreshGitRepository(d.git, d.version, destination)
       }
-      
     }
-    
   }
   
   def refreshGitRepository(String repositoryUri, String version, File destinationDir) {
     
     if (destinationDir.exists()) {
       
-      pullGitRepository(repositoryUri,destinationDir)
+      fetchGitRepository(repositoryUri,destinationDir)
       
     }
     
@@ -65,29 +58,48 @@ class ResolveGitDependenciesTask extends DefaultTask {
     installGitDependency(destinationDir)
     
   }
-  
+    
   def checkoutVersion(File destinationDir, String version) {
     
-  }
+    Git repo = Git.open(destinationDir)
+        
+    Set tags = repo.getRepository().getTags().keySet()
     
-  def pullGitRepository(String repositoryUri, File destinationDir) {
+    List branchesList = repo.branchList().setListMode(ListMode.REMOTE).call()
     
-    PullCommand cmd = Git.open(destinationDir).pull()
+    Set branches = new HashSet<String>(branchesList.size())
     
-    try {
+    for (branchRef in branchesList) {
       
-      cmd.call()
-      
-    } catch (TransportException e) {
-    
-      throw new GradleException("Problem with transport.", e.getMessage() )
-      
-    } catch (GitAPIException e) {
-    
-      throw new GradleException("Problem with clone.", e.getMessage() )
+      branches.add(branchRef.getName().replace("refs/remotes/origin/", ""))
       
     }
     
+    println version
+    println tags
+    println branches
+    
+    CheckoutCommand cmd = repo.checkout()
+    
+    if (version in tags || version in branches ) {
+      
+      cmd.setName(version)
+      
+    } else {
+    
+      cmd.setName("master")
+    
+    }
+    
+    cmd.call()
+    
+  }
+    
+  def fetchGitRepository(String repositoryUri, File destinationDir) {
+        
+    FetchCommand cmd = Git.open(destinationDir).fetch()
+    
+    cmd.call()
     
   }
   
@@ -99,33 +111,21 @@ class ResolveGitDependenciesTask extends DefaultTask {
     cmd.setURI(repositoryUri)
     
     cmd.setDirectory(destinationDir)
-    
-    try {
-      
-      cmd.call()
-      
-    } catch (TransportException e) {
-    
-      throw new GradleException("Problem with transport.", e.getMessage() )
-      
-    } catch (GitAPIException e) {
-    
-      throw new GradleException("Problem with clone.", e.getMessage() )
-      
-    }
-    
+               
+    cmd.call()
+            
   }
   
   
   def installGitDependency(File destinationDir) {
     
-    def wrapperName = 'gradlew'
+    def wrapperName = "gradlew"
     
     def os = System.getProperty("os.name").toLowerCase()
     
-    if (os.contains('windows')) {
+    if (os.contains("windows")) {
       
-      wrapperName = 'gradlew.bat'
+      wrapperName = "gradlew.bat"
       
     }
         

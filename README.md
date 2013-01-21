@@ -25,7 +25,7 @@ buildscript {
     }
 }
 ```
-If you do not need the gradle --offline [[(cf this issue)|http://issues.gradle.org/browse/GRADLE-1768]], You can also do
+If you do not need the gradle --offline (cf http://issues.gradle.org/browse/GRADLE-1768), You can also do
 ```groovy  
 apply from: 'https://raw.github.com/bat-cha/gradle-plugin-git-dependencies/0.1/git-dependencies.gradle'
 ```

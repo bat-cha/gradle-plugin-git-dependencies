@@ -1,3 +1,23 @@
+/**
+ * Copyright 2013 Baptiste Chatrain
+ *
+ * This file is part of Gradle Git-Dependencies Plugin.
+ *
+ * Gradle Git-Dependencies Plugin is free software:
+ * you can redistribute it and/or modifyit under the terms of the GNU General
+ * Public License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * Gradle Git-Dependencies Plugin is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Gradle Git-Dependencies Plugin.
+ * If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.batcha.gradle.plugins.gitDependencies
 
 import org.eclipse.jgit.api.CheckoutCommand;
@@ -17,14 +37,23 @@ import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.testing.TestOutputEvent.Destination;
 
+/**
+ * Gradle Task processing the specified dependencies and resolving them via Gradle Wrapper and Maven Install plugin
+ * @author bat-cha
+ *
+ */
 class ResolveGitDependenciesTask extends DefaultTask {
   
+  @Override
   def String getDescription() {
     
     return "Resolves dependencies specified using 'git' extra property in dependencies' configurations"
     
   }
 
+  /**
+   * Iterates trough dependencies specification and resolve the Git-Dependencies.
+   */
   @TaskAction
   def installDependencies() {
 
@@ -39,6 +68,12 @@ class ResolveGitDependenciesTask extends DefaultTask {
     }
   }
   
+  /**
+   * Refresh Git Dependency.
+   * @param repositoryUri
+   * @param version
+   * @param destinationDir
+   */
   def refreshGitRepository(String repositoryUri, String version, File destinationDir) {
     
     if (destinationDir.exists()) {
@@ -58,7 +93,12 @@ class ResolveGitDependenciesTask extends DefaultTask {
     installGitDependency(destinationDir)
     
   }
-    
+   
+  /**
+   *  Checkout version (or master if not found)
+   * @param destinationDir
+   * @param version
+   */
   def checkoutVersion(File destinationDir, String version) {
     
     Git repo = Git.open(destinationDir)
@@ -75,10 +115,6 @@ class ResolveGitDependenciesTask extends DefaultTask {
       
     }
     
-    println version
-    println tags
-    println branches
-    
     CheckoutCommand cmd = repo.checkout()
     
     if (version in tags || version in branches ) {
@@ -94,7 +130,12 @@ class ResolveGitDependenciesTask extends DefaultTask {
     cmd.call()
     
   }
-    
+  
+  /**
+   * Fetch from upstream.  
+   * @param repositoryUri
+   * @param destinationDir
+   */
   def fetchGitRepository(String repositoryUri, File destinationDir) {
         
     FetchCommand cmd = Git.open(destinationDir).fetch()
@@ -103,7 +144,11 @@ class ResolveGitDependenciesTask extends DefaultTask {
     
   }
   
-  
+  /**
+   * Clone Git dependency's repository
+   * @param repositoryUri
+   * @param destinationDir
+   */
   def cloneGitRepository(String repositoryUri, File destinationDir) {
     
     CloneCommand cmd = Git.cloneRepository()
@@ -116,7 +161,10 @@ class ResolveGitDependenciesTask extends DefaultTask {
             
   }
   
-  
+  /**
+   * Install via Gradle Wrapper assuming Maven plugin used by dependency.
+   * @param destinationDir
+   */
   def installGitDependency(File destinationDir) {
     
     def wrapperName = "gradlew"

@@ -5,10 +5,11 @@ It relies on Gradle wrapper tasks and Gradle maven plugin being applied to your 
 ## What it does
 For each dependency you want to resolve using it sources from a git repository, via the ```git``` extra property
 This plugin does the following:
-* clone the repository if not yet done
-* pull
+* clone the repository or fetch from upstream into ```groovy project.gitDependenciesDir ```, default to ```groovy "${project.buildDir.path}/git-dependencies"```
 * checkout branch/tag corresponding to specified version (master if not found)
 * ./gradlew install 
+
+To be resolved just as other dependencies, this plugin add the mavenLocal repository to your project 
 
 ## Usage
 To use the git-dependencies plugin, include in your build script:

@@ -4,8 +4,8 @@ version = '1.0'
 buildscript {
   repositories { mavenCentral() }
   dependencies {
-    classpath files("../build/libs/gradle-plugin-git-dependencies-0.1.jar")
-    classpath 'org.ajoberstar:gradle-git:0.2.3'
+    classpath files("../build/libs/git-dependencies-0.1.jar")
+    classpath 'org.eclipse.jgit:org.eclipse.jgit:2.2.0.201212191850-r'
   }
 }
 

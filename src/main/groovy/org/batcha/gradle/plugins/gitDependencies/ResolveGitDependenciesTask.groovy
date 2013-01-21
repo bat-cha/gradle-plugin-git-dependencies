@@ -60,11 +60,16 @@ class ResolveGitDependenciesTask extends DefaultTask {
       
     }
     
+    checkoutVersion(destinationDir, version)
+    
     installGitDependency(destinationDir)
     
   }
   
-  
+  def checkoutVersion(File destinationDir, String version) {
+    
+  }
+    
   def pullGitRepository(String repositoryUri, File destinationDir) {
     
     PullCommand cmd = Git.open(destinationDir).pull()

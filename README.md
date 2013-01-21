@@ -34,7 +34,7 @@ To declare a Dependency,
 ```groovy 
 dependencies {
 
-  compile('org.batcha:dummy-project-a:4.2').ext.git = 'git://github.com/bat-cha/dummy-java-project-a.git'
+  compile('org.batcha:dummy-project-a:4.2').ext.git = 'https://github.com/bat-cha/dummy-java-project-a.git'
     
 }
 ```

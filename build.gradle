@@ -5,7 +5,7 @@ apply plugin: 'eclipse'
 apply plugin: 'groovy'
 apply plugin: 'maven'
 
-//apply plugin: 'signing'
+apply plugin: 'signing'
 
 buildscript {
   repositories { mavenCentral() }
@@ -25,11 +25,14 @@ dependencies {
 
 task wrapper(type: Wrapper) { gradleVersion = '1.3' }
 
-//project.setProperty("signing.secretKeyRingFile", new File("${System.properties['user.home']}/.gnupg/secring.gpg"))
-
 task sourcesJar(type: Jar, dependsOn:classes) {
   classifier = 'sources'
   from sourceSets.main.allSource
+}
+
+task javadocJar(type:Jar) {
+  classifier = 'javadoc'
+  from javadoc.outputs.files
 }
 
 task groovydocJar(type: Jar, dependsOn:groovydoc) {
@@ -39,29 +42,30 @@ task groovydocJar(type: Jar, dependsOn:groovydoc) {
 
 artifacts {
   archives sourcesJar
+  archives javadocJar
   archives groovydocJar
 }
-/*
-signing {
-  ext.secretKeyRingFile="${System.properties['user.home']}/.gnupg/secring.gpg"
+
+signing {  
   sign configurations.archives
 }
-*/
+
 uploadArchives {
   repositories {
     mavenDeployer {
-      //beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-      repository(url: "http://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-        authentication(userName: System.getProperty('nexusUser'), password: System.getProperty('nexusPassword'))
+      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+      //repository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
+      repository(url: "http://oss.sonatype.org/service/local/staging/deploy/maven2/") {        
+        authentication(userName: "user", password: "pwd")
       }
       pom.project {
         name project.name
-        description "The Git dependencies plugin provides integration of other Java gradle project dependencies via git to your project using seamless gradle syntax. It relies on Gradle wrapper tasks and Gradle maven plugin."
+        description "The Git dependencies plugin provides integration of other Gradle project dependencies via git"
         url "https://github.com/bat-cha/gradle-plugin-git-dependencies"
         licenses {
           license {
-            name "MIT License"
-            url "https://github.com/bat-cha/gradle-plugin-git-dependencies"
+            name "LGPL V3 License"
+            url "https://raw.github.com/bat-cha/gradle-plugin-git-dependencies/master/lgpl-3.0.txt"
           }
         }
         developers {

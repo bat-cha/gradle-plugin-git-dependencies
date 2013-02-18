@@ -24,7 +24,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'org.batcha.gradle.plugins:gradle-plugin-git-dependencies:0.1'
+        classpath 'org.batcha.gradle.plugins:git-dependencies:0.1'
     }
 }
 ```

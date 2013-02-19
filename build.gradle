@@ -1,4 +1,5 @@
 group = 'org.batcha.gradle.plugins'
+description = 'The Git dependencies plugin provides integration of other Gradle project dependencies via git'
 version = '0.1'
 
 apply plugin: 'eclipse'
@@ -6,6 +7,7 @@ apply plugin: 'groovy'
 apply plugin: 'maven'
 
 apply plugin: 'signing'
+apply plugin: 'github-pages'
 
 buildscript {
   repositories { mavenCentral() }
@@ -23,7 +25,19 @@ dependencies {
   groovy localGroovy()
 }
 
-task wrapper(type: Wrapper) { gradleVersion = '1.3' }
+githubPages {
+  repoUri = 'git@github.com:bat-cha/gradle-plugin-git-dependencies.git'
+  pages {
+    from(javadoc.outputs.files) {
+      into 'docs/javadoc'
+    }
+    from(groovydoc.outputs.files) {
+      into 'docs/groovydoc'
+    }
+  }
+}
+
+task wrapper(type: Wrapper) { gradleVersion = '1.4' }
 
 task sourcesJar(type: Jar, dependsOn:classes) {
   classifier = 'sources'
@@ -53,14 +67,19 @@ signing {
 uploadArchives {
   repositories {
     mavenDeployer {
-      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-      //repository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
-      repository(url: "http://oss.sonatype.org/service/local/staging/deploy/maven2/") {        
-        authentication(userName: "user", password: "pwd")
+      name = 'Sonatype OSS'
+      repository(url:'https://oss.sonatype.org/service/local/staging/deploy/maven2') {
+        authentication(userName:sonatypeUserName, password:sonatypePassword)
       }
+      snapshotRepository(url:'https://oss.sonatype.org/content/repositories/snapshots') {
+        authentication(userName:sonatypeUserName, password:sonatypePassword)
+      }
+  
+      beforeDeployment { signing.signPom it }
+      
       pom.project {
         name project.name
-        description "The Git dependencies plugin provides integration of other Gradle project dependencies via git"
+        description project.description
         url "https://github.com/bat-cha/gradle-plugin-git-dependencies"
         licenses {
           license {

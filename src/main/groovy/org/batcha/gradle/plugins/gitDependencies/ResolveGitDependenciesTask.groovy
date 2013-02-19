@@ -179,7 +179,9 @@ class ResolveGitDependenciesTask extends DefaultTask {
         
     def command = wrapperName + " install" 
         
-    command.execute(null, destinationDir)
+    def install = command.execute(null, destinationDir)
+    
+    install.waitFor()
     
   }
   

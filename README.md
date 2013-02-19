@@ -41,3 +41,6 @@ dependencies {
     
 }
 ```
+
+## API Doc
+* [Groovydoc](http://bat-cha.github.com/gradle-plugin-git-dependencies/docs/groovydoc)

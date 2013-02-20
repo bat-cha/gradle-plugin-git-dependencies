@@ -45,8 +45,13 @@ class GitDependenciesPlugin implements Plugin<Project> {
     }
     
     project.task('resolveGitDependencies', type: ResolveGitDependenciesTask)
-
-    project.compileJava.dependsOn project.resolveGitDependencies
+    
+    project.afterEvaluate {
+      
+      project.tasks.resolveGitDependencies.execute()
+      
+    }
+    
     
   }
 

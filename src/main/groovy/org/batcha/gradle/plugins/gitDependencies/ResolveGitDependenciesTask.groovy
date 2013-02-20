@@ -167,7 +167,7 @@ class ResolveGitDependenciesTask extends DefaultTask {
    */
   def installGitDependency(File destinationDir) {
     
-    def wrapperName = "gradlew"
+    def wrapperName = "./gradlew"
     
     def os = System.getProperty("os.name").toLowerCase()
     

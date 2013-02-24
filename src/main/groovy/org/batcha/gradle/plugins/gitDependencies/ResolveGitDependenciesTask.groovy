@@ -20,6 +20,7 @@
 
 package org.batcha.gradle.plugins.gitDependencies
 
+import org.apache.log4j.Logger;
 import org.eclipse.jgit.api.CheckoutCommand;
 import org.eclipse.jgit.api.CloneCommand
 import org.eclipse.jgit.api.FetchCommand;
@@ -33,6 +34,8 @@ import org.eclipse.jgit.api.errors.TransportException
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.artifacts.ExternalModuleDependency
+import org.gradle.api.tasks.OutputDirectories;
+import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.testing.TestOutputEvent.Destination;
@@ -57,14 +60,26 @@ class ResolveGitDependenciesTask extends DefaultTask {
   @TaskAction
   def installDependencies() {
 
-    project.configurations.testCompile.allDependencies.withType(ExternalModuleDependency).each { d ->
+    Set<ExternalModuleDependency> dependencies = new HashSet<ExternalModuleDependency>()
+    //scan each configuration for git-dependencies
+    for ( config in project.configurations) {
 
-      if (d.hasProperty("git")) {
+      config.allDependencies.withType(ExternalModuleDependency).each { d ->
 
-        def destination = new File(project.gitDependenciesDir + File.separator + d.name)
+        if (d.hasProperty("git")) {
 
-        refreshGitRepository(d.git, d.version, destination)
+          dependencies.add(d)
+        }
       }
+    }
+    //resolve the dependencies found
+    for (ExternalModuleDependency d : dependencies) {
+
+      logger.info("Git dependency found for " + d.name + " " + d.version + " " + d.git)
+
+      def destination = new File(project.gitDependenciesDir + File.separator + d.name)
+
+      refreshGitRepository(d.git, d.version, destination)
     }
   }
   
@@ -127,6 +142,8 @@ class ResolveGitDependenciesTask extends DefaultTask {
     
     }
     
+    logger.info("Git dependency checkout " + version + " in " + destinationDir)
+    
     cmd.call()
     
   }
@@ -139,6 +156,8 @@ class ResolveGitDependenciesTask extends DefaultTask {
   def fetchGitRepository(String repositoryUri, File destinationDir) {
         
     FetchCommand cmd = Git.open(destinationDir).fetch()
+    
+    logger.info("Git dependency fetch from  " + repositoryUri)
     
     cmd.call()
     
@@ -156,6 +175,8 @@ class ResolveGitDependenciesTask extends DefaultTask {
     cmd.setURI(repositoryUri)
     
     cmd.setDirectory(destinationDir)
+    
+    logger.info("Git dependency clone from  " + repositoryUri)
                
     cmd.call()
             
@@ -180,6 +201,8 @@ class ResolveGitDependenciesTask extends DefaultTask {
     def command = wrapperName + " install" 
         
     def install = command.execute(null, destinationDir)
+    
+    logger.info("Git dependency install via gradle wrapper from  " + destinationDir)
     
     install.waitFor()
     

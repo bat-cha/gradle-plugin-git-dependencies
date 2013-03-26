@@ -197,15 +197,25 @@ class ResolveGitDependenciesTask extends DefaultTask {
       wrapperName = "gradlew.bat"
       
     }
-        
-    def command = wrapperName + " install" 
-        
-    def install = command.execute(null, destinationDir)
     
-    logger.info("Git dependency install via gradle wrapper from  " + destinationDir)
+    def wrapper = new File(destinationDir.absolutePath + File.separator + wrapperName)
     
-    install.waitFor()
+    if (wrapper.exists()) {
+      
+      def command = wrapperName + " install"
+      
+      def install = command.execute(null, destinationDir)
+      
+      logger.info("Git dependency install via gradle wrapper from  " + destinationDir)
+      
+      install.waitFor()
+      
+    } else {
+   
+      logger.info("Gradle wrapper not found in " + destinationDir + " ! The dependency won't be installed to your local maven repository ")
     
+    }
+
   }
   
 }

@@ -18,7 +18,7 @@ repositories {	 mavenCentral() }
 
 dependencies {
   compile (gradleApi())
-  compile ('org.eclipse.jgit:org.eclipse.jgit:2.2.0.201212191850-r') {
+  compile ('org.eclipse.jgit:org.eclipse.jgit:2.3.1.201302201838-r') {
     transitive true  
   }  
   testCompile group: 'junit', name: 'junit', version: '4.11'
@@ -37,7 +37,7 @@ githubPages {
   }
 }
 
-task wrapper(type: Wrapper) { gradleVersion = '1.4' }
+task wrapper(type: Wrapper) { gradleVersion = '1.5' }
 
 task sourcesJar(type: Jar, dependsOn:classes) {
   classifier = 'sources'

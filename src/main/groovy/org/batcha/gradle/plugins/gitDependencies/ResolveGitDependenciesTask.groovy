@@ -212,7 +212,7 @@ class ResolveGitDependenciesTask extends DefaultTask {
       
     } else {
    
-      logger.info("Gradle wrapper not found in " + destinationDir + " ! The dependency won't be installed to your local maven repository ")
+      logger.info("Gradle wrapper not found in " + destinationDir + " ! The dependency won't be installed to your local repository ")
     
     }
 

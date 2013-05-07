@@ -132,8 +132,13 @@ class ResolveGitDependenciesTask extends DefaultTask {
     
     CheckoutCommand cmd = repo.checkout()
     
-    if (version in tags || version in branches ) {
+    if (version in tags) {
       
+      cmd.setName(version)
+      
+    } else if (version in branches) {
+      
+      cmd.setCreateBranch(true)
       cmd.setName(version)
       
     } else {

@@ -120,25 +120,36 @@ class ResolveGitDependenciesTask extends DefaultTask {
         
     Set tags = repo.getRepository().getTags().keySet()
     
-    List branchesList = repo.branchList().setListMode(ListMode.REMOTE).call()
-    
-    Set branches = new HashSet<String>(branchesList.size())
+    List branchesList = repo.branchList().setListMode(ListMode.ALL).call()
+
+    Set branchesRemote = new HashSet<String>()
+    Set branchesLocal = new Hashset<String>()
     
     for (branchRef in branchesList) {
-      
-      branches.add(branchRef.getName().replace("refs/remotes/origin/", ""))
-      
+
+      if(branchRef.getName().find("refs/heads")) {
+
+        branchesLocal.add(branchRef.getName().replace("refs/heads/", ""))
+
+      } else if(branchRef.getName().find("refs/remotes")) {
+
+        branchesRemote.add(branchRef.getName().replace("refs/remotes/origin/", ""))
+
+      }
+
     }
-    
+
     CheckoutCommand cmd = repo.checkout()
     
     if (version in tags) {
       
       cmd.setName(version)
       
-    } else if (version in branches) {
+    } else if (version in branchesRemote) {
       
-      cmd.setCreateBranch(true)
+      if(!branchesLocal.contains(version))
+        cmd.setCreateBranch(true)
+
       cmd.setName(version)
       
     } else {

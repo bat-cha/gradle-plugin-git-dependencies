@@ -37,7 +37,7 @@ githubPages {
   }
 }
 
-task wrapper(type: Wrapper) { gradleVersion = '1.5' }
+task wrapper(type: Wrapper) { gradleVersion = '1.6' }
 
 task sourcesJar(type: Jar, dependsOn:classes) {
   classifier = 'sources'

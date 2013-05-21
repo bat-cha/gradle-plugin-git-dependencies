@@ -123,7 +123,7 @@ class ResolveGitDependenciesTask extends DefaultTask {
     List branchesList = repo.branchList().setListMode(ListMode.ALL).call()
 
     Set branchesRemote = new HashSet<String>()
-    Set branchesLocal = new Hashset<String>()
+    Set branchesLocal = new HashSet<String>()
     
     for (branchRef in branchesList) {
 

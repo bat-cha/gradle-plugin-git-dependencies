@@ -23,6 +23,7 @@ package org.batcha.gradle.plugins.gitDependencies
 import org.apache.log4j.Logger;
 import org.eclipse.jgit.api.CheckoutCommand;
 import org.eclipse.jgit.api.CloneCommand
+import org.eclipse.jgit.api.CreateBranchCommand
 import org.eclipse.jgit.api.FetchCommand;
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.api.ListBranchCommand;
@@ -147,9 +148,11 @@ class ResolveGitDependenciesTask extends DefaultTask {
       
     } else if (version in branchesRemote) {
       
-      if(!branchesLocal.contains(version))
+      if(!branchesLocal.contains(version)) {
         cmd.setCreateBranch(true)
-
+        cmd.setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK)
+        cmd.setStartPoint("origin/" + version);
+      }
       cmd.setName(version)
       
     } else {

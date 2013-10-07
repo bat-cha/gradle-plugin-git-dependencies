@@ -76,11 +76,17 @@ class ResolveGitDependenciesTask extends DefaultTask {
     //resolve the dependencies found
     for (ExternalModuleDependency d : dependencies) {
 
-      logger.info("Git dependency found for " + d.name + " " + d.version + " " + d.git)
+      def gitVersion = d.version
+
+      if (d.hasProperty("gitVersion")) {
+        gitVersion = d.gitVersion
+      }
+
+      logger.info("Git dependency found for " + d.name + " " + d.version + " " + d.git + "[version/branch: " + gitVersion + "]")
 
       def destination = new File(project.gitDependenciesDir + File.separator + d.name)
 
-      refreshGitRepository(d.git, d.version, destination)
+      refreshGitRepository(d.git, gitVersion, destination)
     }
   }
   

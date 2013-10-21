@@ -27,6 +27,9 @@ import org.eclipse.jgit.api.CreateBranchCommand
 import org.eclipse.jgit.api.FetchCommand;
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.api.ListBranchCommand;
+import org.eclipse.jgit.revwalk.RevWalk
+import org.eclipse.jgit.revwalk.RevCommit
+import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.api.ListBranchCommand.ListMode;
 import org.eclipse.jgit.api.ListTagCommand;
 import org.eclipse.jgit.api.PullCommand
@@ -145,7 +148,6 @@ class ResolveGitDependenciesTask extends DefaultTask {
     if (version in tags) {
       
       cmd.setName(version)
-      
     } else if (version in branchesRemote) {
       
       if(!branchesLocal.contains(version)) {
@@ -154,11 +156,17 @@ class ResolveGitDependenciesTask extends DefaultTask {
         cmd.setStartPoint("origin/" + version);
       }
       cmd.setName(version)
-      
     } else {
-    
-      cmd.setName("master")
-    
+      cmd.setCreateBranch(true)
+      RevWalk revWalk = new RevWalk(repo.getRepository())
+      ObjectId id = repo.getRepository().resolve(version)
+      if (id == null) {
+        cmd.setName("master")
+      } else {				
+        RevCommit commit = revWalk.parseCommit(id)      
+        cmd.setStartPoint(commit)
+        cmd.setName(version)
+      }
     }
     
     logger.info("Git dependency checkout " + version + " in " + destinationDir)

@@ -17,41 +17,27 @@
  * along with Gradle Git-Dependencies Plugin.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-package org.batcha.gradle.plugins.gitDependencies
+package org.batcha.gradle.plugins
 
-import org.gradle.api.Plugin
 import org.gradle.api.Project
 
 /**
- * Git-Dependencies Plugin implementation.
+ * Git-Dependencies Plugin Convention
  * @author bat-cha
  *
  */
-class GitDependenciesPlugin implements Plugin<Project> {
+class GitDependenciesConvention {
 
   /**
-   * Plugin application.
+   * Constructor.
+   * @param project
    */
-  def void apply( Project project) {
-
-    project.convention.plugins.gitDependencies = new GitDependenciesConvention(project)
-    
-    //We make use of the local Maven repository since we install git dependencies 
-    project.repositories {
-            
-      mavenLocal()
-      
-    }
-    
-    project.task('resolveGitDependencies', type: ResolveGitDependenciesTask)
-    
-    project.afterEvaluate {
-      
-      project.tasks.resolveGitDependencies.execute()
-      
-    }
-    
-    
+  def GitDependenciesConvention(Project project) {
+    gitDependenciesDir = "${project.rootDir}"
   }
 
+  /**
+   * Directory to clone/fetch sources from git dependencies' repositories into
+   */
+  def String gitDependenciesDir
 }

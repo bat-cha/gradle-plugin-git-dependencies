@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Baptiste Chatrain
+ * Copyright 2014 Baptiste Chatrain <baptiste.chatrain@gmail.com>
  *
  * This file is part of Gradle Git-Dependencies Plugin.
  *
@@ -17,7 +17,6 @@
  * along with Gradle Git-Dependencies Plugin.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.batcha.gradle.plugins.gitDependencies
 
 import org.gradle.api.Plugin

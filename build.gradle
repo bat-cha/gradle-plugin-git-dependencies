@@ -21,7 +21,7 @@ buildscript {
   }
   dependencies {
     classpath 'org.ajoberstar:gradle-git:0.6.3'
-    classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.6.0'
+    classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.7.0'
     classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
   }
 }

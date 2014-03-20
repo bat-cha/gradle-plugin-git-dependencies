@@ -15,4 +15,4 @@ buildscript {
   dependencies { classpath "org.batcha.gradle.plugins:git-dependencies:${version}" }
 }
 
-apply plugin: org.batcha.gradle.plugins.gitDependencies.GitDependenciesPlugin
+apply plugin: org.batcha.gradle.plugins.GitDependenciesPlugin

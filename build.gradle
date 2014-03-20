@@ -1,10 +1,18 @@
 group = 'org.batcha.gradle.plugins'
 description = 'The Git dependencies plugin provides integration of other Gradle project dependencies via git'
-version = '0.1'
 
 apply plugin: 'eclipse'
 apply plugin: 'groovy'
 apply plugin: 'maven'
+apply plugin: 'release'
+
+release {
+  failOnSnapshotDependencies = true
+  allowLocalModifications = false
+  releaseDryRun = false
+  scm = 'git'
+}
+version = release.projectVersion
 
 apply plugin: 'signing'
 apply plugin: 'github-pages'
@@ -18,11 +26,14 @@ buildscript {
     jcenter()
     mavenCentral()
     maven { url 'https://oss.sonatype.org/content/groups/public/' }
+    maven { url 'http://maven.tmatesoft.com/content/repositories/releases/' }
+    maven { url 'http://maven.tmatesoft.com/content/repositories/snapshots/' }
   }
   dependencies {
     classpath 'org.ajoberstar:gradle-git:0.6.3'
     classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.7.0'
     classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
+    classpath 'au.com.ish.gradle:release:2.2.2'
   }
 }
 

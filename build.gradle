@@ -14,7 +14,6 @@ release {
 }
 version = release.projectVersion
 
-apply plugin: 'signing'
 apply plugin: 'github-pages'
 apply plugin: 'jacoco'
 apply plugin: 'sonar-runner'
@@ -92,49 +91,4 @@ artifacts {
   archives sourcesJar
   archives javadocJar
   archives groovydocJar
-}
-
-signing {
-    required { gradle.taskGraph.hasTask("uploadArchives") }
-  sign configurations.archives
-}
-
-uploadArchives {
-  repositories {
-    mavenDeployer {
-      name = 'Sonatype OSS'
-      repository(url:'https://oss.sonatype.org/service/local/staging/deploy/maven2') {
-        authentication(userName:sonatypeUserName, password:sonatypePassword)
-      }
-      snapshotRepository(url:'https://oss.sonatype.org/content/repositories/snapshots') {
-        authentication(userName:sonatypeUserName, password:sonatypePassword)
-      }
-  
-      beforeDeployment { signing.signPom it }
-      
-      pom.project {
-        name project.name
-        description project.description
-        url "https://github.com/bat-cha/gradle-plugin-git-dependencies"
-        licenses {
-          license {
-            name "LGPL V3 License"
-            url "https://raw.github.com/bat-cha/gradle-plugin-git-dependencies/master/lgpl-3.0.txt"
-          }
-        }
-        developers {
-          developer {
-            id "bat-cha"
-            name "Baptiste Chatrain"
-            email "baptiste.chatrain@gmail.com"
-          }
-        }
-        scm {
-          connection "scm:git:git://github.com/bat-cha/gradle-plugin-git-dependencies.git"
-          developerConnection "scm:git:git@github.com:bat-cha/gradle-plugin-git-dependencies.git"
-          url "https://github.com/bat-cha/gradle-plugin-git-dependencies"
-        }
-      }
-    }
-  }
 }

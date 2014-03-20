@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2014 Baptiste Chatrain <baptiste.chatrain@gmail.com>
  *
  * This file is part of Gradle Git-Dependencies Plugin.

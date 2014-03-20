@@ -8,21 +8,44 @@ apply plugin: 'maven'
 
 apply plugin: 'signing'
 apply plugin: 'github-pages'
+apply plugin: 'jacoco'
+apply plugin: 'sonar-runner'
+apply from: rootProject.file('gradle/publishing.gradle')
+apply from: rootProject.file('gradle/license.gradle')
 
 buildscript {
-  repositories { mavenCentral() }
-  dependencies { classpath 'org.ajoberstar:gradle-git:0.2.3' }
+  repositories {
+    jcenter()
+    mavenCentral()
+    maven { url 'https://oss.sonatype.org/content/groups/public/' }
+  }
+  dependencies {
+    classpath 'org.ajoberstar:gradle-git:0.6.3'
+    classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.6.0'
+    classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
+  }
 }
 
-repositories {	 mavenCentral() }
+sonarRunner.sonarProperties {
+  property 'sonar.language', 'grvy'
+}
+
+sourceCompatibility = '1.7'
+
+jacoco.toolVersion = '0.7.0.201403182114'
+
+repositories {
+  mavenCentral()
+}
+
+def jgitVersion = '3.3.0.201403021825-r'
 
 dependencies {
-  compile (gradleApi())
-  compile ('org.eclipse.jgit:org.eclipse.jgit:2.3.1.201302201838-r') {
-    transitive true  
-  }  
+  compile gradleApi()  
+  compile localGroovy()
+  compile "org.eclipse.jgit:org.eclipse.jgit:$jgitVersion"
   testCompile group: 'junit', name: 'junit', version: '4.11'
-  groovy localGroovy()
+  
 }
 
 githubPages {
@@ -37,7 +60,7 @@ githubPages {
   }
 }
 
-task wrapper(type: Wrapper) { gradleVersion = '1.6' }
+task wrapper(type: Wrapper) { gradleVersion = '1.11' }
 
 task sourcesJar(type: Jar, dependsOn:classes) {
   classifier = 'sources'

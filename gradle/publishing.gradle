@@ -1,0 +1,56 @@
+apply plugin: 'maven-publish'
+apply plugin: 'bintray'
+
+publishing {
+	publications {
+		main(MavenPublication) {
+			from components.java
+			artifact sourcesJar
+			artifact javadocJar
+			artifact groovydocJar
+
+			pom.withXml {
+				asNode().with {
+					appendNode('description', project.description)
+					appendNode('url', 'https://github.com/bat-cha/gradle-plugin-git-dependencies')
+					appendNode('licenses').with {
+						appendNode('license').with {
+							appendNode('name', 'LGPL V3 License')
+							appendNode('url', 'https://raw.github.com/bat-cha/gradle-plugin-git-dependencies/master/lgpl-3.0.txt')
+						}
+					}
+					appendNode('developers').with {
+						appendNode('developer').with {
+							appendNode('id', 'bat-cha')
+							appendNode('name', 'Baptiste Chatrain')
+							appendNode('email', 'baptiste.chatrain@gmail.com')
+						}
+					}
+					appendNode('scm').with {
+						appendNode('connection', 'git://github.com/bat-cha/gradle-plugin-git-dependencies.git')
+						appendNode('developerConnection', 'git@github.com:bat-cha/gradle-plugin-git-dependencies.git')
+						appendNode('url', 'http://github.com/bat-cha/gradle-plugin-git-dependencies')
+					}
+				}
+			}
+		}
+	}
+	repositories {
+		mavenLocal()
+	}
+}
+
+if (project.hasProperty('bintrayUser') && project.hasProperty('bintrayKey')) {
+	bintray {
+		user = project.bintrayUser
+		key = project.bintrayKey
+		publications = ['main']
+		pkg {
+			repo = 'gradle-plugins'
+      name = 'git-dependencies'
+      desc = 'The Git dependencies plugin provides integration of other Gradle project dependencies via git'
+			licenses = ['LGPL V3 License']
+			labels = ['gradle', 'git']
+		}
+	}
+}

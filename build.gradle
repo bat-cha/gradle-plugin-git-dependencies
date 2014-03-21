@@ -1,12 +1,11 @@
 group = 'org.batcha.gradle.plugins'
 description = 'The Git dependencies plugin provides integration of other Gradle project dependencies via git'
-version = '0.2'
+version = '0.1'
 
 apply plugin: 'eclipse'
 apply plugin: 'groovy'
 apply plugin: 'maven'
-apply plugin: 'release'
-
+apply plugin: 'signing'
 apply plugin: 'github-pages'
 apply plugin: 'jacoco'
 apply plugin: 'sonar-runner'
@@ -25,13 +24,17 @@ buildscript {
     classpath 'org.ajoberstar:gradle-git:0.6.3'
     classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.7.0'
     classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
-    classpath 'au.com.ish.gradle:release:2.2.2'
   }
 }
 
 sonarRunner.sonarProperties {
   property 'sonar.language', 'grvy'
 }
+
+signing {
+  sign configurations.archives
+}
+
 
 sourceCompatibility = '1.7'
 

@@ -47,7 +47,7 @@ if (project.hasProperty('bintrayUser') && project.hasProperty('bintrayKey')) {
 		publications = ['main']
 		pkg {
 			repo = 'gradle-plugins'
-      name = 'gradle-plugin-git-dependencies'
+      name = 'org.batcha.gradle.plugins:git-dependencies'
       desc = 'The Git dependencies plugin provides integration of other Gradle project dependencies via git'
 			licenses = ['LGPL V3 License']
 			labels = ['gradle', 'git']

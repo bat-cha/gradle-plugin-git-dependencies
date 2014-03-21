@@ -19,7 +19,11 @@
  */
 package org.batcha.gradle.plugins.git.dependencies
 
+import groovy.util.logging.Slf4j
 
+import org.gradle.api.artifacts.ExternalModuleDependency
+
+@Slf4j
 class InstallHelper {
 
 
@@ -27,7 +31,7 @@ class InstallHelper {
    * Install via Gradle Wrapper install task
    * @param destinationDir
    */
-  def installGitDependency(File destinationDir) {
+  static def installGitDependency(File destinationDir, ExternalModuleDependency dependency) {
 
     def wrapperName = "./gradlew"
 
@@ -46,12 +50,12 @@ class InstallHelper {
 
       def install = command.execute(null, destinationDir)
 
-      logger.info("Git dependency install via gradle wrapper from  " + destinationDir)
+      log.info("Git dependency install via gradle wrapper from  " + destinationDir)
 
       install.waitFor()
     } else {
 
-      logger.info("Gradle wrapper not found in " + destinationDir + " ! The dependency won't be installed to your local repository ")
+      log.info("Gradle wrapper not found in " + destinationDir + " ! The dependency won't be installed to your local repository ")
     }
   }
 }

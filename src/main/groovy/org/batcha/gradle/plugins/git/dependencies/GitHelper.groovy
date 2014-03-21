@@ -19,6 +19,8 @@
  */
 package org.batcha.gradle.plugins.git.dependencies
 
+import groovy.util.logging.Slf4j
+
 import org.eclipse.jgit.api.CheckoutCommand
 import org.eclipse.jgit.api.CloneCommand
 import org.eclipse.jgit.api.CreateBranchCommand
@@ -29,6 +31,7 @@ import org.eclipse.jgit.lib.ObjectId
 import org.eclipse.jgit.revwalk.RevCommit
 import org.eclipse.jgit.revwalk.RevWalk
 
+@Slf4j
 class GitHelper {
 
   /**
@@ -36,7 +39,7 @@ class GitHelper {
    * @param destinationDir
    * @param version
    */
-  def checkoutVersion(File destinationDir, String version) {
+  static def checkoutVersion(File destinationDir, String version) {
 
     Git repo = Git.open(destinationDir)
 
@@ -84,7 +87,7 @@ class GitHelper {
       }
     }
 
-    logger.info("Git dependency checkout " + version + " in " + destinationDir)
+    log.info("Git dependency checkout " + version + " in " + destinationDir)
 
     cmd.call()
   }
@@ -94,11 +97,11 @@ class GitHelper {
    * @param repositoryUri
    * @param destinationDir
    */
-  def fetchGitRepository(String repositoryUri, File destinationDir) {
+  static def fetchGitRepository(String repositoryUri, File destinationDir) {
 
     FetchCommand cmd = Git.open(destinationDir).fetch()
 
-    logger.info("Git dependency fetch from  " + repositoryUri)
+    log.info("Git dependency fetch from  " + repositoryUri)
 
     cmd.call()
   }
@@ -108,7 +111,7 @@ class GitHelper {
    * @param repositoryUri
    * @param destinationDir
    */
-  def cloneGitRepository(String repositoryUri, File destinationDir) {
+  static def cloneGitRepository(String repositoryUri, File destinationDir) {
 
     CloneCommand cmd = Git.cloneRepository()
 
@@ -116,7 +119,7 @@ class GitHelper {
 
     cmd.setDirectory(destinationDir)
 
-    logger.info("Git dependency clone from  " + repositoryUri)
+    log.info("Git dependency clone from  " + repositoryUri + " to " + destinationDir.absolutePath)
 
     cmd.call()
   }

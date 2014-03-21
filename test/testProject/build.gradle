@@ -4,8 +4,8 @@ version = '1.0'
 buildscript {
   repositories { mavenCentral() }
   dependencies {
-    classpath files("../build/libs/git-dependencies-0.1.jar")
-    classpath 'org.eclipse.jgit:org.eclipse.jgit:2.2.0.201212191850-r'
+    classpath files("../../build/libs/git-dependencies-0.2.jar")
+    classpath 'org.eclipse.jgit:org.eclipse.jgit:3.3.0.201403021825-r'
   }
 }
 
@@ -13,7 +13,6 @@ buildscript {
 repositories {
   mavenCentral()
 }
-
 apply plugin: 'java'
 apply plugin: 'git-dependencies'
 
@@ -25,6 +24,7 @@ dependencies {
   )
   
   compile('org.batcha:dummy-project-a:4.2').ext.git = 'https://github.com/bat-cha/dummy-java-project-a.git'
+//  compile('org.batcha:dummy-project-a:4.2').ext.git = 'file:///d/userfiles/bchatrain/Documents/git/dummy-java-project-a'
 
   testCompile 'junit:junit:4.+'
   

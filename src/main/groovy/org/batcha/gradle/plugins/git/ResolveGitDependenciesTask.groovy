@@ -21,6 +21,8 @@ package org.batcha.gradle.plugins.git
 
 import org.batcha.gradle.plugins.git.dependencies.GitHelper
 import org.gradle.api.DefaultTask
+import org.gradle.api.Project
+import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ExternalModuleDependency
 import org.gradle.api.tasks.TaskAction
 
@@ -30,6 +32,10 @@ import org.gradle.api.tasks.TaskAction
  *
  */
 class ResolveGitDependenciesTask extends DefaultTask {
+
+  def always() {
+    outputs.upToDateWhen { false }
+  }
 
   @Override
   def String getDescription() {
@@ -43,60 +49,97 @@ class ResolveGitDependenciesTask extends DefaultTask {
   @TaskAction
   def installDependencies() {
 
-    Set<ExternalModuleDependency> dependencies = new HashSet<ExternalModuleDependency>()
+    Map<ExternalModuleDependency, Configuration> dependencies = new HashMap<ExternalModuleDependency, Configuration>()
     //scan each configuration for git-dependencies
     for ( config in project.configurations) {
 
-      config.allDependencies.withType(ExternalModuleDependency).each { d ->
+      Configuration configCopy = config.copy()
 
-        if (d.hasProperty("git")) {
+      if (configCopy.resolvedConfiguration.hasError()) {
 
-          dependencies.add(d)
+        config.allDependencies.withType(ExternalModuleDependency).each { d ->
+
+          if (d.hasProperty("git")) {
+
+            dependencies.put(d,config)
+
+          }
         }
       }
+
+
     }
     //resolve the dependencies found
-    for (ExternalModuleDependency d : dependencies) {
+    dependencies.each { dependency, config ->
 
-      refreshGitDependency(d)
+      config.dependencies.remove(dependency)
+
+      refreshGitDependency(dependency, config)
+
+      def gitdir = project.file(project.gitDependenciesDir);
+
+      def projectPath = ':'+gitdir.name+':'+dependency.name;
+
+      def projectDep = ['path':projectPath, 'configuration':config.name]
+
+
+      def settingsFile = new File(gitdir.absolutePath + File.separator + 'settings.gradle')
+
+      settingsFile.withWriter{ it << "include '"+dependency.name+"'"}
+
+      def buildFile = new File(gitdir.absolutePath + File.separator + 'build.gradle')
+
+      buildFile.withWriter{ it << "evaluationDependsOn(':"+dependency.name+"')"}
+      //
+      //      Project dep = ProjectBuilder.builder().withName(projectPath).withParent(project).withProjectDir().build()
+      //
+      //      println dep
+      //
+      //      project.subprojects.add(dep)
+      //
+      //      dep.evaluate()
+
+      project.dependencies.project(projectDep)
+
+      println config.name
+      println config.dependencies
+
 
     }
+
+
   }
 
   /**
    * Refresh Git Dependency.
-   * @param repositoryUri
-   * @param version
-   * @param destinationDir
+   * @param dependency to refresh.
    */
-  def refreshGitRepository(ExternalModuleDependency d) {
+  def refreshGitDependency(ExternalModuleDependency dependency, Configuration config) {
 
-    def gitVersion = d.version
+    def gitVersion = dependency.version
 
-    if (d.hasProperty("gitVersion")) {
-      gitVersion = d.gitVersion
+    if (dependency.hasProperty("gitVersion")) {
+      gitVersion = dependency.gitVersion
     }
 
 
-    logger.info("Git dependency found for " + d.name + " " + d.version + " " + d.git + "[version/branch: " + gitVersion + "]")
+    logger.info("Git dependency found for " + dependency.name + " " + dependency.version + " " + dependency.git + "[version/branch: " + gitVersion + "]")
 
-    def destinationDir = new File(project.gitDependenciesDir + File.separator + d.name)
+    def destinationDir = new File(project.gitDependenciesDir + File.separator + dependency.name)
 
     if (destinationDir.exists()) {
 
-      GitHelper.fetchGitRepository(d.git,destinationDir)
+      GitHelper.fetchGitRepository(dependency.git,destinationDir)
 
     }
 
     else {
 
-      GitHelper.cloneGitRepository(repositoryUri,destinationDir)
+      GitHelper.cloneGitRepository(dependency.git,destinationDir)
 
     }
 
     GitHelper.checkoutVersion(destinationDir, gitVersion)
-
-    //InstallHelper.installGitDependency(d, destinationDir)
 
   }
 

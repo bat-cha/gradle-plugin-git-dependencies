@@ -43,7 +43,7 @@ def jgitVersion = '3.3.0.201403021825-r'
 
 dependencies {
   compile gradleApi()  
-  compile localGroovy()
+  //compile localGroovy()
   compile "org.eclipse.jgit:org.eclipse.jgit:$jgitVersion"
   testCompile group: 'junit', name: 'junit', version: '4.11'
   

@@ -33,7 +33,7 @@ class GitDependenciesConvention {
    * @param project
    */
   def GitDependenciesConvention(Project project) {
-    gitDependenciesDir = "${project.rootDir}"
+    gitDependenciesDir = project.projectDir.parent + File.separator + project.name + '-git-dependencies'//"${project.buildDir.path}/git-dependencies"
   }
 
   /**

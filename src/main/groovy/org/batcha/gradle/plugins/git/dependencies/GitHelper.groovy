@@ -39,7 +39,7 @@ class GitHelper {
    * @param destinationDir
    * @param version
    */
-  static def checkoutVersion(File destinationDir, String version) {
+  static void checkoutVersion(File destinationDir, String version) {
 
     Git repo = Git.open(destinationDir)
 
@@ -97,7 +97,7 @@ class GitHelper {
    * @param repositoryUri
    * @param destinationDir
    */
-  static def fetchGitRepository(String repositoryUri, File destinationDir) {
+  static void fetchGitRepository(String repositoryUri, File destinationDir) {
 
     FetchCommand cmd = Git.open(destinationDir).fetch()
 
@@ -111,7 +111,7 @@ class GitHelper {
    * @param repositoryUri
    * @param destinationDir
    */
-  static def cloneGitRepository(String repositoryUri, File destinationDir) {
+  static void cloneGitRepository(String repositoryUri, File destinationDir) {
 
     CloneCommand cmd = Git.cloneRepository()
 

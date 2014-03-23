@@ -33,11 +33,11 @@ class GitDependenciesConvention {
    * @param project
    */
   def GitDependenciesConvention(Project project) {
-    gitDependenciesDir = project.projectDir.parent + File.separator + project.name + '-git-dependencies'//"${project.buildDir.path}/git-dependencies"
+    gitDependenciesDir = project.file(project.projectDir.parent + File.separator + project.name + '-git-dependencies')
   }
 
   /**
    * Directory to clone/fetch sources from git dependencies' repositories into
    */
-  def String gitDependenciesDir
+  def File gitDependenciesDir
 }

@@ -6,6 +6,7 @@ buildscript {
   dependencies {
     classpath files("../../build/libs/git-dependencies-0.2.jar")
     classpath 'org.eclipse.jgit:org.eclipse.jgit:3.3.0.201403021825-r'
+    classpath "com.google.guava:guava:16.0.1"
   }
 }
 

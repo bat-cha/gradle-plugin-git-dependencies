@@ -1,6 +1,6 @@
 group = 'org.batcha.gradle.plugins'
 description = 'The Git dependencies plugin provides integration of other Gradle project dependencies via git'
-version = '0.1'
+version = '0.2'
 
 apply plugin: 'eclipse'
 apply plugin: 'groovy'
@@ -31,7 +31,7 @@ sonarRunner.sonarProperties {
   property 'sonar.language', 'grvy'
 }
 
-sourceCompatibility = '1.7'
+sourceCompatibility = '1.5'
 
 jacoco.toolVersion = '0.7.0.201403182114'
 
@@ -42,9 +42,9 @@ repositories {
 def jgitVersion = '3.3.0.201403021825-r'
 
 dependencies {
-  compile gradleApi()  
-  //compile localGroovy()
+  compile gradleApi()
   compile "org.eclipse.jgit:org.eclipse.jgit:$jgitVersion"
+  compile "com.google.guava:guava:16.0.1"
   testCompile group: 'junit', name: 'junit', version: '4.11'
   
 }

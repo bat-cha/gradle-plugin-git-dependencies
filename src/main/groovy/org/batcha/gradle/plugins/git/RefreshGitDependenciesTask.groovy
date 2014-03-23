@@ -21,10 +21,8 @@ package org.batcha.gradle.plugins.git
 
 import org.batcha.gradle.plugins.git.dependencies.GradleDependenciesHelper
 import org.gradle.api.DefaultTask
-import org.gradle.api.UnknownProjectException
 import org.gradle.api.artifacts.Configuration
-import org.gradle.api.artifacts.ExternalModuleDependency
-import org.gradle.api.artifacts.ProjectDependency
+import org.gradle.api.artifacts.Dependency
 import org.gradle.api.tasks.TaskAction
 
 import com.google.common.collect.Multimap
@@ -34,49 +32,30 @@ import com.google.common.collect.Multimap
  * @author bat-cha
  *
  */
-class ResolveGitDependenciesTask extends DefaultTask {
+class RefreshGitDependenciesTask extends DefaultTask {
 
   @Override
   def String getDescription() {
 
-    return "Replace by Project dependency the unresolved external dependencies specified using 'git' extra property in dependencies' configurations"
+    return "Refresh the Git dependencies specified using 'git' extra property in dependencies' configurations"
   }
 
   /**
    * Iterates trough dependencies specification and resolve the Git-Dependencies.
    */
   @TaskAction
-  def resolveDependencies() {
+  def refreshGitDependencies() {
+    Multimap<Dependency, Configuration> gitDependencies = GradleDependenciesHelper.getAlreadyResolvedGitDependencies(project)
 
-    Multimap<ExternalModuleDependency, Configuration> gitDependencies = GradleDependenciesHelper.getAlreadyResolvedGitDependencies(project)
+    //resolve the dependencies found
+    gitDependencies.keySet().each { dependency ->
 
-    gitDependencies.entries().each { entry ->
+      logger.info("Refreshing Git Dependency {}:{}:{}",dependency.group,dependency.name,dependency.version)
+      GradleDependenciesHelper.refreshGitDependency(project, dependency)
 
-      def dependency = entry.getKey()
-      def config = entry.getValue()
-
-      def projectPath = ':'+project.gitDependenciesDir.name+':'+dependency.name;
-
-      def projectDep = ['path':projectPath, 'configuration':config.name]
-
-      try {
-
-        ProjectDependency replaced = project.dependencies.project(projectDep);
-
-        replaced.ext.git = dependency.git
-        if (dependency.hasProperty("gitVersion")) {
-          replaced.ext.gitVersion = dependency.gitVersion
-        }
-
-        config.dependencies.add(replaced)
-
-        config.dependencies.remove(dependency)
-
-        logger.info("Replacing an ExternalDependency by a Project Dependency")
-      } catch (UnknownProjectException e) {
-
-        logger.error("Failed to Replace an ExternalDependency by a Project Dependency... ")
-      }
     }
   }
+
+
+
 }

@@ -19,6 +19,8 @@
  */
 package org.batcha.gradle.plugins
 
+import org.batcha.gradle.plugins.git.InitGitDependenciesTask
+import org.batcha.gradle.plugins.git.RefreshGitDependenciesTask
 import org.batcha.gradle.plugins.git.ResolveGitDependenciesTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -37,27 +39,15 @@ class GitDependenciesPlugin implements Plugin<Project> {
 
     project.convention.plugins.gitDependencies = new GitDependenciesConvention(project)
 
-    def gitdir = project.file(project.gitDependenciesDir);
-
-    gitdir.mkdirs()
-
-    def settingsFile = new File(project.projectDir.parent + File.separator + 'settings.gradle')
-
-    settingsFile.withWriter{ it << "include '"+project.name+"', '"+gitdir.name+"'"}
-
-    project.evaluationDependsOn(':'+gitdir.name)
-
-    //We make use of the local Maven repository since we install git dependencies
-    //project.repositories { mavenLocal() }
-
+    project.task('initGitDependencies', type: InitGitDependenciesTask)
     project.task('resolveGitDependencies', type: ResolveGitDependenciesTask)
+    project.task('refreshGitDependencies', type: RefreshGitDependenciesTask)
+
+
 
     project.afterEvaluate {
 
       project.tasks.resolveGitDependencies.execute()
-
     }
-
   }
-
 }

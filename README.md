@@ -66,8 +66,12 @@ dependencies {
 To setup the multi-project build for all the non resolved dependencies having a git property,
 ``` 
 ./gradlew initGitDependencies
-```
 
+```
+To refresh git repositories for the non resolved dependencies having a git property,
+``` 
+./gradlew refreshGitDependencies
+```
 
 ## API Doc
 * [Groovydoc](http://bat-cha.github.com/gradle-plugin-git-dependencies/docs/groovydoc)

@@ -1,1 +1,3 @@
-org.batcha.gradle.plugins.gitDependencies
+org.batcha.gradle.plugins
+org.batcha.gradle.plugins.git
+org.batcha.gradle.plugins.git.dependencies

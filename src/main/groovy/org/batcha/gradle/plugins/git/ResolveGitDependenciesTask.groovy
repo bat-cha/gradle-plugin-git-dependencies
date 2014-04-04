@@ -43,7 +43,7 @@ class ResolveGitDependenciesTask extends DefaultTask {
   }
 
   /**
-   * Iterates trough dependencies specification and resolve the Git-Dependencies.
+   * Iterates through dependencies specification and resolve the Git-Dependencies.
    */
   @TaskAction
   def resolveDependencies() {

@@ -55,7 +55,4 @@ class RefreshGitDependenciesTask extends DefaultTask {
 
     }
   }
-
-
-
 }

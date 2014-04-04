@@ -156,5 +156,4 @@ class GradleDependenciesHelper {
     GitHelper.checkoutVersion(destinationDir, gitVersion)
 
   }
-
 }

@@ -57,8 +57,6 @@ class InitGitDependenciesTask extends DefaultTask {
     }
   }
 
-
-
   def init(Project project, Multimap<ExternalModuleDependency, Configuration> gitDependencies) {
 
     //resolve the dependencies found
@@ -70,5 +68,4 @@ class InitGitDependenciesTask extends DefaultTask {
 
     }
   }
-
 }

@@ -10,6 +10,11 @@ bin
 .classpath
 .settings
 
+# intellij
+.idea
+*.iml
+local.properties
+
 # log
 *.log*
 

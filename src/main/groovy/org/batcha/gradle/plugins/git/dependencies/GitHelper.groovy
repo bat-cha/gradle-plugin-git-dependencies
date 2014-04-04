@@ -75,12 +75,18 @@ class GitHelper {
       }
       cmd.setName(version)
     } else {
-      cmd.setCreateBranch(true)
       RevWalk revWalk = new RevWalk(repo.getRepository())
       ObjectId id = repo.getRepository().resolve(version)
       if (id == null) {
+        if(!branchesLocal.contains("master")) {
+          cmd.setCreateBranch(true)
+        }
         cmd.setName("master")
       } else {
+        if(!branchesLocal.contains(version)) {
+          cmd.setCreateBranch(true)
+        }
+
         RevCommit commit = revWalk.parseCommit(id)
         cmd.setStartPoint(commit)
         cmd.setName(version)
